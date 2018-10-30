@@ -1,5 +1,6 @@
 package com.yven.dao;
 
+import com.yven.domain.Imuser;
 import com.yven.domain.Spool;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +69,12 @@ public class ControllerDaoJdbc {
             throw e;
         }
         return insert>0?true:false;
+    }
+
+    private static final String GET_INFO_IMUSER ="SELECT userId,mobilePhone,account_type FROM imuser i WHERE i.`mobilePhone` IS NOT NULL AND i.`mobilePhone` != '';" ;
+
+    public List<Imuser> getInfoFromImuser() {
+        List<Imuser> imusers = jdbcTemplate.query(GET_INFO_IMUSER, new Object[]{}, new Imuser());
+        return imusers;
     }
 }

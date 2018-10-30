@@ -1,6 +1,7 @@
 package com.yven.service;
 
 import com.yven.dao.ControllerDaoJdbc;
+import com.yven.domain.Imuser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,11 @@ public class ControlService {
 
         List<String> result = controllerDaoJdbc.getThirdCtrlorList2(devTid);
         return result;
+    }
+
+    public List<Imuser> getInfoFromImuser(){
+        List<Imuser> imusers = controllerDaoJdbc.getInfoFromImuser();
+        return  imusers;
     }
 
 

@@ -1,10 +1,13 @@
 package com.yven.start;
 
 import com.yven.dao.ControllerDaoJdbc;
+import com.yven.domain.Imuser;
 import com.yven.domain.Spool;
 import com.yven.mongodb.entity.ClientInfoEntity;
 import com.yven.mongodb.service.ClientInfoMongoService;
 import com.yven.service.ControlService;
+import com.yven.threads.CountAccountTypeThread;
+import com.yven.utils.CountAccountType;
 import com.yven.utils.conf.Config;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +17,7 @@ import com.yven.service.UserService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 测试启动类
@@ -24,7 +28,67 @@ public class Main {
 
 	private static Logger logger = Logger.getLogger(Main.class);
 
-	public static void main(String[] args){
+	/**
+	 * poi excepl导入导出( 多线程处理数据)
+	 * @param args
+	 */
+	public static void main(String[] args) throws Exception {
+		// 计数器为4
+		CountDownLatch latch = new CountDownLatch(4);
+		//导入
+		List<Imuser> imusers = CountAccountType.ImportExcel("C:\\Users\\yangwen\\Desktop\\imuser_formal0.xls");
+		System.out.println("excel导入成功===============");
+		// 直接处理
+//		System.out.println("begin===================");
+//		for (Imuser imuser : imusers) {
+//			imuser.setTclAccount(CountAccountType.isTclAccount(imuser.getMobilePhone()));
+//			System.out.println(imuser);
+//		}
+//		System.out.println("end===================");
+
+		// 多线程处理
+		CountAccountTypeThread test = new CountAccountTypeThread();
+		test.handleList(imusers,4,latch);
+
+		latch.await();// 等待线程结束
+
+		System.out.println("处理完成===============");
+		// 数据库中取数据
+//		ApplicationContext ac = new ClassPathXmlApplicationContext(new String[]{"classpath*:conf/applicationContext.xml"});
+//		ControlService controlService = (ControlService) ac.getBean("controlService");
+//		List<Imuser> imusers = controlService.getInfoFromImuser();
+//		for (Imuser imuser : imusers) {
+//			imuser.setTclAccount(CountAccountType.isTclAccount(imuser.getMobilePhone()));
+//			System.out.println(imuser);
+//		}
+
+		// 导出
+//		CountAccountType.exportExcel(imusers,"C:\\Users\\yangwen\\Desktop\\imuser_export_dev.xls");
+//		CountAccountType.exportExcel(imusers,"C:\\Users\\yangwen\\Desktop\\imuser_export_test.xls");
+		CountAccountType.exportExcel(imusers,"C:\\Users\\yangwen\\Desktop\\imuser_export_formal0.xls");
+	}
+
+	/**
+	 * get info form imuser
+	 * @param args
+	 */
+	public static void main3(String[] args){
+		@SuppressWarnings("resource")
+		ApplicationContext ac = new ClassPathXmlApplicationContext(new String[]{"classpath*:conf/applicationContext.xml"});
+		ControlService controlService = (ControlService) ac.getBean("controlService");
+		List<Imuser> imusers = controlService.getInfoFromImuser();
+		for (Imuser imuser : imusers) {
+			imuser.setTclAccount(CountAccountType.isTclAccount(imuser.getMobilePhone()));
+			System.out.println(imuser);
+		}
+
+	}
+
+	/**
+	 * mongodb测试
+	 * @param args
+	 */
+	public static void main2(String[] args){
 
 	    // 测试读取配置文件的信息
 	    String test = Config.getString("yven");
