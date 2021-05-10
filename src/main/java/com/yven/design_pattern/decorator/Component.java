@@ -1,7 +1,7 @@
 package com.yven.design_pattern.decorator;
 
 /**
- *
+ * 接口
  *
  * @author shaolong.yang@tuya.com
  * @version 1.0

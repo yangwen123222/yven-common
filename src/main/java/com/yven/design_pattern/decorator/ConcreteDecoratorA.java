@@ -1,6 +1,8 @@
 package com.yven.design_pattern.decorator;
 
 /**
+ * 装饰器A
+ *
  * @author shaolong.yang@tuya.com
  * @version 1.0
  * @date 2021/05/08
