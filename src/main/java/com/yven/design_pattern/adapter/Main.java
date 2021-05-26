@@ -15,7 +15,7 @@ package com.yven.design_pattern.adapter;
 //    }
 //}
 
-public class Client {
+public class Main {
     public static void main(String[] args) {
         // 使用普通功能类
 //        Target concreteTarget = new ConcreteTarget();
